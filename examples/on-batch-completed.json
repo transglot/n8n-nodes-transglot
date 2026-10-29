@@ -1,0 +1,66 @@
+{
+  "name": "Transglot \u2014 receive batch completion",
+  "nodes": [
+    {
+      "id": "trigger",
+      "name": "On batch completed",
+      "type": "n8n-nodes-transglot.transglotTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "event": "batch.completed"
+      }
+    },
+    {
+      "id": "project",
+      "name": "Get project context",
+      "type": "n8n-nodes-transglot.transglot",
+      "typeVersion": 1,
+      "position": [
+        280,
+        0
+      ],
+      "parameters": {
+        "resource": "project",
+        "operation": "get"
+      }
+    },
+    {
+      "id": "note",
+      "name": "Setup and event trust",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -450
+      ],
+      "parameters": {
+        "content": "## Batch completion event\nSelect your Transglot credential on both nodes. Requires webhook access, manage ability, and a publicly reachable n8n webhook URL.\n\nActivation creates a subscription; deactivation removes it. The trigger verifies the HMAC signature, timestamp and selected event before starting the workflow. After upgrading from 0.1.0, deactivate and reactivate the workflow to retain its signing secret.\n\nBatch completion does not mean translations are human-approved. Repeated valid deliveries within five minutes are not deduplicated. See the package README for static-data handling and delivery-ID deduplication guidance.\n\nInactive example with no credentials.",
+        "width": 650,
+        "height": 400
+      }
+    }
+  ],
+  "connections": {
+    "On batch completed": {
+      "main": [
+        [
+          {
+            "node": "Get project context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "tags": []
+}

@@ -1,0 +1,74 @@
+{
+  "name": "n8n-nodes-transglot",
+  "version": "0.1.1",
+  "description": "n8n community node for transglot: push source files, run AI translation, pull localized files, read project/batch status, and trigger workflows on project events over the deploy-token API.",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "i18n",
+    "localization",
+    "translation",
+    "transglot"
+  ],
+  "license": "MIT",
+  "homepage": "https://transglot.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/transglot/n8n-nodes-transglot.git"
+  },
+  "bugs": {
+    "url": "https://transglot.ai/contact",
+    "email": "hello@transglot.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": {
+    "name": "transglot",
+    "email": "hello@transglot.ai",
+    "url": "https://transglot.ai"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "index.js",
+  "files": [
+    "dist",
+    "index.js",
+    "examples",
+    "CHANGELOG.md"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/TransglotApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/Transglot/Transglot.node.js",
+      "dist/nodes/TransglotTrigger/TransglotTrigger.node.js"
+    ]
+  },
+  "scripts": {
+    "prepack": "npm run build",
+    "build": "tsc && node scripts/copy-assets.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"credentials/**/*.ts\" \"nodes/**/*.ts\"",
+    "lint:community": "eslint --config eslint.community.config.mjs credentials nodes package.json",
+    "test": "jest"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "devDependencies": {
+    "@n8n/node-cli": "^0.54.5",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "eslint": "^9.17.0",
+    "jest": "^29.7.0",
+    "n8n-workflow": "^2.29.3",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.7.2"
+  }
+}

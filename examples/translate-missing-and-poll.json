@@ -1,0 +1,175 @@
+{
+  "name": "Transglot \u2014 translate missing strings and poll",
+  "nodes": [
+    {
+      "id": "manual",
+      "name": "Run manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "translate",
+      "name": "Translate missing strings",
+      "type": "n8n-nodes-transglot.transglot",
+      "typeVersion": 1,
+      "position": [
+        260,
+        0
+      ],
+      "parameters": {
+        "resource": "project",
+        "operation": "translate",
+        "scope": "missing",
+        "translateOptions": {}
+      }
+    },
+    {
+      "id": "wait",
+      "name": "Wait five seconds",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        520,
+        0
+      ],
+      "parameters": {
+        "amount": 5,
+        "unit": "seconds"
+      }
+    },
+    {
+      "id": "get",
+      "name": "Get translation batch",
+      "type": "n8n-nodes-transglot.transglot",
+      "typeVersion": 1,
+      "position": [
+        780,
+        0
+      ],
+      "parameters": {
+        "resource": "batch",
+        "operation": "get",
+        "batchId": "={{ $('Translate missing strings').first().json.id }}",
+        "includeFailures": true
+      }
+    },
+    {
+      "id": "branch",
+      "name": "Still processing",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "active",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "^(pending|processing)$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "notes",
+      "name": "Read before running",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -420
+      ],
+      "parameters": {
+        "content": "## Translate missing strings\nSelect a Transglot credential on both Transglot nodes. Requires a paid API-enabled plan and the manage ability. Configure target locales in the project. This workflow uses AI words and may trigger configured usage charges.\n\nPolls every five seconds until the batch is terminal. Completed does not mean human-approved. If a batch is stuck, stop this workflow and investigate it in Transglot. Set an execution timeout appropriate to your n8n deployment.\n\nInactive example; no credential or customer data included. Native n8n import/execution is still to be checked.",
+        "width": 660,
+        "height": 350
+      }
+    }
+  ],
+  "connections": {
+    "Run manually": {
+      "main": [
+        [
+          {
+            "node": "Translate missing strings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Translate missing strings": {
+      "main": [
+        [
+          {
+            "node": "Wait five seconds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait five seconds": {
+      "main": [
+        [
+          {
+            "node": "Get translation batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get translation batch": {
+      "main": [
+        [
+          {
+            "node": "Still processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Still processing": {
+      "main": [
+        [
+          {
+            "node": "Wait five seconds",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "executionTimeout": 600
+  },
+  "pinData": {},
+  "tags": []
+}
