@@ -19,6 +19,6 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run typecheck
       - run: npm test -- --runInBand
-      - run: npm run lint:community
       - run: npm run build
+      - run: npm run lint:community
       - run: npm publish --provenance --access public
